@@ -18,6 +18,9 @@ public class TransactionRecord {
     @Column(nullable = false)
     private float amount;
 
+    @Column(nullable = false)
+    private float incentive;
+    
     protected TransactionRecord() {
     }
 
@@ -43,9 +46,17 @@ public class TransactionRecord {
 		return amount;
 	}
 
+    public float getIncentive() {
+        return incentive;
+    }
+
+    public void setIncentive(float incentive) {
+        this.incentive = incentive;
+    }
+
 	@Override
     public String toString() {
-        return String.format("Transaction=[senderId=%d, recipientId=%d, amount=%f]", senderId, recipientId, amount);
+        return String.format("Transaction=[senderId=%d, recipientId=%d, amount=%f, incentive=%f]", senderId, recipientId, amount, incentive);
     }
 
 }
