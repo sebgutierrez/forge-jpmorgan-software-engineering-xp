@@ -1,4 +1,4 @@
-package com.jpmc.midascore.kafka;
+package com.jpmc.midascore.integrations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -43,12 +43,13 @@ public class Listener {
         UserRecord sender = userRepo.findById(senderId);
         UserRecord recipient = userRepo.findById(recipientId);
 
-        if(sender.getBalance() < transactionAmount){
+        if(sender.getBalance() <= transactionAmount){
             System.out.println("Sender does not have sufficient funds. Discarding transaction.");
             return;
         }
 
         updateBalances(transaction, sender, recipient);
+        
     }
 
     private void updateBalances(Transaction transaction, UserRecord sender, UserRecord recipient){
@@ -62,6 +63,8 @@ public class Listener {
         float updatedRecipientBalance = recipient.getBalance() + transaction.getAmount();
 
         if(incentive != null){
+            System.out.println("Incentive exists");
+            System.out.println(incentive.getAmount());
             updatedRecipientBalance += incentive.getAmount();
             transactionRecord.setIncentive(incentive.getAmount());
             transactionRepo.save(transactionRecord);
@@ -71,15 +74,6 @@ public class Listener {
         userRepo.save(sender);
         recipient.setBalance(updatedRecipientBalance);
         userRepo.save(recipient);
-
-        // System.out.println(transactionRecord.toString());
-
-        // System.out.println(sender.getName());
-        // System.out.println(sender.getBalance());
-
-        // System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
-        // System.out.println(recipient.getName());
-        // System.out.println(recipient.getBalance());
+        
     }
 }
